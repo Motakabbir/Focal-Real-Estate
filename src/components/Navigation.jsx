@@ -29,25 +29,27 @@ const Navigation = () => {
   };
 
   const closeSubMenu = (index) => {
-    if (activeSubMenu !== index) {
-      setActiveSubMenu(null);
-    }
-  };
+    // Close submenu on mouse leave
 
-  let timeout;
-
-  const handleEvent = (event) => {
+      const handleEvent = (event) => {
     const navMenu = document.querySelector('.navmenu');
-    if (!navMenu || !navMenu.contains(event.target)) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
+    const submenu = document.querySelector('.submenu');
+    if (!navMenu.contains(event.target) ) {
+      // setActiveSubMenu(null);
+      if (activeSubMenu === index && submenu) {
+        setActiveSubMenu(index);
+      } else {
         setActiveSubMenu(null);
-      }, 2000);
+      }
     }
   };
 
-  document.addEventListener('click', handleEvent);
-  document.addEventListener('mousemove', handleEvent);
+document.addEventListener('click', handleEvent);
+document.addEventListener('mousemove', handleEvent);
+  };
+
+  // if mouse is not in navmenu then setActiveSubMenu(null);
+
 
 
   return (
@@ -68,7 +70,8 @@ const Navigation = () => {
                 {route.subRoutes ? (
                   <>
                     <span
-                      onMouseLeave={() => closeSubMenu(index)}
+                       // On mouse enter, show submenu
+                      onMouseLeave={() => closeSubMenu(index)} // On mouse leave, close submenu
                       className="cursor-pointer"
                     >
                       <span className="flex items-center">
