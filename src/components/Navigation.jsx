@@ -4,7 +4,10 @@ import { routes } from '../router';
 
 const SubMenu = ({ handleSubMenuClick, subRoutes, showSubMenu, closeSubMenu }) => {
   return (
-    <ul onMouseLeave={handleSubMenuClick} className={`submenu absolute bg-white mt-2 p-4 rounded shadow-lg ${showSubMenu ? 'block' : 'hidden'}`}>
+    <ul
+      onMouseLeave={closeSubMenu} // Close submenu on mouse leave
+      className={`submenu absolute bg-white mt-2 p-4 rounded shadow-lg ${showSubMenu ? 'block' : 'hidden'}`}
+    >
       {subRoutes.map((subRoute, index) => (
         <li key={index} className="text-md leading-8 hover:text-blue-700">
           <Link to={subRoute.path} onClick={closeSubMenu}>
@@ -21,12 +24,31 @@ const Navigation = () => {
   const location = useLocation();
 
   const handleSubMenuClick = (index) => {
-    setActiveSubMenu(index === activeSubMenu ? null : index);
+    // Toggle submenu visibility
+    setActiveSubMenu(index === activeSubMenu ? index : index );
   };
 
-  const closeSubMenu = () => {
-    setActiveSubMenu(null);
+  const closeSubMenu = (index) => {
+    if (activeSubMenu !== index) {
+      setActiveSubMenu(null);
+    }
   };
+
+  let timeout;
+
+  const handleEvent = (event) => {
+    const navMenu = document.querySelector('.navmenu');
+    if (!navMenu || !navMenu.contains(event.target)) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        setActiveSubMenu(null);
+      }, 2000);
+    }
+  };
+
+  document.addEventListener('click', handleEvent);
+  document.addEventListener('mousemove', handleEvent);
+
 
   return (
     <nav className="flex items-center justify-between p-6 lg:px-8">
@@ -37,14 +59,18 @@ const Navigation = () => {
             <img className="h-12 w-auto" src="/fre-logo-color.svg" alt="FOCAL Real Estate" />
           </a>
         </div>
+        {/* {activeSubMenu} */}
         <ul className="navmenu flex flex-1 justify-center">
           {routes
             .filter((route) => route.main !== false)
             .map((route, index) => (
-              <li className="mr-8 text-lg leading-8" key={index}>
+              <li className="mr-8 text-lg leading-8" key={index} onMouseEnter={() => handleSubMenuClick(index)}>
                 {route.subRoutes ? (
                   <>
-                    <span onMouseOver={() => handleSubMenuClick(index)}  className="cursor-pointer">
+                    <span
+                      onMouseLeave={() => closeSubMenu(index)}
+                      className="cursor-pointer"
+                    >
                       <span className="flex items-center">
                         {route.title}
                         <span className="text-xs ml-1">
@@ -82,19 +108,22 @@ const Navigation = () => {
                         </span>
                       </span>
                     </span>
-                    <SubMenu handleSubMenuClick={handleSubMenuClick} subRoutes={route.subRoutes} showSubMenu={activeSubMenu === index} closeSubMenu={closeSubMenu} />
+                    <SubMenu
+                      handleSubMenuClick={handleSubMenuClick}
+                      subRoutes={route.subRoutes}
+                      showSubMenu={activeSubMenu === index}
+                      closeSubMenu={closeSubMenu}
+                    />
                   </>
                 ) : (
                   <>
-                  
-                  {route.path === "/blog"?
-                    <a href='https://focalrealestate.com.au/blog'>
-                      Blog
-                    </a>:
-                    <Link to={route.path} className={`${location.pathname === route.path ? 'active-link' : ''}`}>
-                    {route.title}
-                  </Link>
-                  }
+                    {route.path === "/blog" ? (
+                      <a href="https://focalrealestate.com.au/blog">Blog</a>
+                    ) : (
+                      <Link to={route.path} className={`${location.pathname === route.path ? 'active-link' : ''}`}>
+                        {route.title}
+                      </Link>
+                    )}
                   </>
                 )}
               </li>
