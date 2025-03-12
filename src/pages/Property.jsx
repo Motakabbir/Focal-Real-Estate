@@ -29,13 +29,14 @@ export default function Property() {
     console.log(id);
     useEffect(() => {
         const fetchProperty = async () => {
-            fetch(`https://focalrealestate.com.au/internal_api/framework/api/property-data-vaultre?status=${typee}`)
+            fetch(`https://focalrealestate.com.au/internal_api/framework/api/property-single-data?status=${typee}&id=${id}`)
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log(data.items);
-                    const property = data.items.filter((property) => property.id == id);
-                    console.log('property data',property);
-                    setState(...property);
+                    // console.log(data.items);
+                    // const property = data.items.filter((property) => property.id == id);
+                    // console.log('property data',property);
+                    // setState(...property);
+                    setState(data);
                 });
         };
         if (!property) {
