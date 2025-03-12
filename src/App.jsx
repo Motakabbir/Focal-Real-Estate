@@ -3,7 +3,7 @@ import './index.css';
 import axios from "axios"
 import Header from './components/Header';
 import NavigationRoute from './components/NavigationRoute';
-
+import ScrollToTop from "./helper/ScrollToTop";
 function App() {
   // const userAuth =  () => {
     const userData = {
@@ -16,6 +16,7 @@ function App() {
   // }
   return (
     <Router>
+        <ScrollToTop />
       <Header />
       <Routes>
         <Route path="/*" element={<NavigationRoute />} />
